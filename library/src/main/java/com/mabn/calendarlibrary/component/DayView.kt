@@ -1,12 +1,19 @@
 package com.mabn.calendarlibrary.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Badge
+import androidx.compose.material.BadgedBox
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +35,7 @@ import java.time.format.TextStyle
 fun DayView(
     date: LocalDate,
     onDayClick: (LocalDate) -> Unit,
+    hasBadge : Boolean,
     theme: CalendarTheme,
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -41,6 +49,10 @@ fun DayView(
         )
         else if (isSelected) modifier.background(
             theme.selectedDayBackgroundColor,
+            shape = theme.dayShape
+        )
+        else if (hasBadge) modifier.background(
+            theme.selectedDayBackgroundColor.copy(0.5f),
             shape = theme.dayShape
         )
         else modifier.background(theme.dayBackgroundColor, shape = theme.dayShape)
@@ -58,24 +70,33 @@ fun DayView(
                     TextStyle.SHORT,
                     LocalContext.current.resources.configuration.locales[0]
                 ),
-                fontSize = 10.sp,
-                color = theme.weekDaysTextColor
+                fontSize = theme.weekDaysTextSize,
+                color = theme.weekDaysTitleTextColor
             )
+            Spacer(modifier = Modifier.size(10.dp))
         }
-        Box(
-            dayValueModifier
-                .padding(5.dp)
-                .aspectRatio(1f)
-                .clickable { onDayClick(date) },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                date.dayOfMonth.toString(),
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center,
-                color = if (isSelected || isCurrentDay) theme.selectedDayValueTextColor else theme.dayValueTextColor
-            )
+        BadgedBox(badge = {
+            if(hasBadge) Badge(modifier = Modifier.offset(x = (-10).dp, y = 10.dp ), backgroundColor = Color.Blue)
+            {
+                Icon(Icons.Outlined.DateRange, contentDescription = null, tint = Color.White, modifier = Modifier.size(10.dp))
+            }
+        }) {
+            Box(
+                dayValueModifier
+                    .padding(5.dp)
+                    .height(30.dp)
+                    .aspectRatio(1f)
+                    .clickable { onDayClick(date) },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    date.dayOfMonth.toString(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = theme.weekDaysTextSize,
+                    textAlign = TextAlign.Center,
+                    color = if (isSelected || isCurrentDay) theme.selectedDayValueTextColor else theme.dayValueTextColor
+                )
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ import java.time.LocalDate
 internal fun InlineCalendar(
     loadedDates: Array<List<LocalDate>>,
     selectedDate: LocalDate,
+    daysWithBadge: List<LocalDate>,
     theme: CalendarTheme,
     loadNextWeek: (nextWeekDate: LocalDate) -> Unit,
     loadPrevWeek: (endWeekDate: LocalDate) -> Unit,
@@ -41,6 +42,7 @@ internal fun InlineCalendar(
                         DayView(
                             date,
                             theme = theme,
+                            hasBadge = daysWithBadge.contains(date),
                             isSelected = selectedDate == date,
                             onDayClick = onDayClick,
                             modifier = Modifier.dayViewModifier(date)

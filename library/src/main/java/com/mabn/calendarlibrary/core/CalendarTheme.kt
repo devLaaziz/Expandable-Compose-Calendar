@@ -6,16 +6,21 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 data class CalendarTheme(
     val backgroundColor: Color,
     val headerBackgroundColor: Color,
+    val headerValueTextSize: TextUnit,
     val dayBackgroundColor: Color,
     val selectedDayBackgroundColor: Color,
     val dayValueTextColor: Color,
     val selectedDayValueTextColor: Color,
     val headerTextColor: Color,
+    val weekDaysTitleTextColor: Color,
     val weekDaysTextColor: Color,
+    val weekDaysTextSize: TextUnit,
     val dayShape: Shape
 )
 
@@ -31,6 +36,8 @@ val calendarDefaultTheme: CalendarTheme
         selectedDayValueTextColor = MaterialTheme.colors.onBackground,
         headerTextColor = MaterialTheme.colors.onBackground,
         weekDaysTextColor = MaterialTheme.colors.onBackground,
-        dayShape = RectangleShape
-
+        weekDaysTitleTextColor = MaterialTheme.colors.onBackground,
+        dayShape = RectangleShape,
+        headerValueTextSize = 20.sp,
+        weekDaysTextSize = 13.sp
     )

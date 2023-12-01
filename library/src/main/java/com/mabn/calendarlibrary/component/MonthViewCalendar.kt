@@ -17,6 +17,7 @@ import java.time.YearMonth
 internal fun MonthViewCalendar(
     loadedDates: Array<List<LocalDate>>,
     selectedDate: LocalDate,
+    daysWithBadge: List<LocalDate>,
     theme: CalendarTheme,
     currentMonth: YearMonth,
     loadDatesForMonth: (YearMonth) -> Unit,
@@ -28,7 +29,7 @@ internal fun MonthViewCalendar(
         loadNextDates = { loadDatesForMonth(currentMonth) },
         loadPrevDates = { loadDatesForMonth(currentMonth.minusMonths(2)) }
     ) { currentPage ->
-        FlowRow(Modifier.height(355.dp)) {
+        FlowRow() {
             loadedDates[currentPage].forEachIndexed { index, date ->
                 Box(
                     Modifier
@@ -40,6 +41,7 @@ internal fun MonthViewCalendar(
                         date,
                         theme = theme,
                         isSelected = selectedDate == date,
+                        hasBadge = daysWithBadge.contains(date),
                         onDayClick = { onDayClick(date) },
                         weekDayLabel = index < DateTimeConstants.DAYS_IN_WEEK,
                         modifier = Modifier.dayViewModifier(date, currentMonth, monthView = true)

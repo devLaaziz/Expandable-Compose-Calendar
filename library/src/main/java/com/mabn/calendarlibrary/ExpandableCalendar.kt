@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,19 +23,23 @@ import com.mabn.calendarlibrary.core.CalendarTheme
 import com.mabn.calendarlibrary.core.Period
 import com.mabn.calendarlibrary.core.calendarDefaultTheme
 import com.mabn.calendarlibrary.utils.getWeekStartDate
+import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
 fun ExpandableCalendar(
     onDayClick: (LocalDate) -> Unit,
-    theme: CalendarTheme = calendarDefaultTheme
+    theme: CalendarTheme = calendarDefaultTheme,
+    daysWithBadge: List<LocalDate>,
+    onMonthChanged: (month: State<YearMonth>) -> Unit
 ) {
     val viewModel: CalendarViewModel = viewModel()
     val loadedDates = viewModel.visibleDates.collectAsState()
     val selectedDate = viewModel.selectedDate.collectAsState()
     val calendarExpanded = viewModel.calendarExpanded.collectAsState()
     val currentMonth = viewModel.currentMonth.collectAsState()
+    onMonthChanged(viewModel.currentMonth.collectAsState())
     ExpandableCalendar(
         loadedDates = loadedDates.value,
         selectedDate = selectedDate.value,
@@ -42,7 +47,8 @@ fun ExpandableCalendar(
         onIntent = viewModel::onIntent,
         calendarExpanded = calendarExpanded.value,
         theme = theme,
-        onDayClick = onDayClick
+        onDayClick = onDayClick,
+        daysWithBadge = daysWithBadge,
     )
 }
 
@@ -54,7 +60,8 @@ private fun ExpandableCalendar(
     onIntent: (CalendarIntent) -> Unit,
     calendarExpanded: Boolean,
     theme: CalendarTheme,
-    onDayClick: (LocalDate) -> Unit
+    onDayClick: (LocalDate) -> Unit,
+    daysWithBadge: List<LocalDate>,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,11 +72,10 @@ private fun ExpandableCalendar(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(bottom = 10.dp)
+                .padding(bottom = 10.dp, start = 15.dp)
                 .fillMaxWidth()
                 .background(theme.headerBackgroundColor)
         ) {
-            Spacer(Modifier.weight(1f))
             MonthText(selectedMonth = currentMonth, theme = theme)
             Spacer(Modifier.weight(1f))
             ToggleExpandCalendarButton(
@@ -83,6 +89,7 @@ private fun ExpandableCalendar(
             MonthViewCalendar(
                 loadedDates,
                 selectedDate,
+                daysWithBadge,
                 theme = theme,
                 currentMonth = currentMonth,
                 loadDatesForMonth = { yearMonth ->
@@ -103,6 +110,7 @@ private fun ExpandableCalendar(
             InlineCalendar(
                 loadedDates,
                 selectedDate,
+                daysWithBadge,
                 theme = theme,
                 loadNextWeek = { nextWeekDate -> onIntent(CalendarIntent.LoadNextDates(nextWeekDate)) },
                 loadPrevWeek = { endWeekDate ->

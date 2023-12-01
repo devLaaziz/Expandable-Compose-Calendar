@@ -19,7 +19,7 @@ fun MonthText(selectedMonth: YearMonth, theme: CalendarTheme, modifier: Modifier
             context.resources.configuration.locales[0]
         ).uppercase() + " " + selectedMonth.year,
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
+        fontSize = theme.headerValueTextSize,
         color = theme.headerTextColor,
         modifier = modifier
     )

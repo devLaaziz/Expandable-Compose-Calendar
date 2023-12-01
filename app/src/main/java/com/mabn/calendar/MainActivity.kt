@@ -3,6 +3,7 @@ package com.mabn.calendar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.mabn.calendarlibrary.ExpandableCalendar
 import com.mabn.calendar.ui.theme.CalendarTheme
 import com.mabn.calendarlibrary.core.calendarDefaultTheme
 import java.time.LocalDate
+import java.time.Month
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Calendar() {
     val currentDate = remember { mutableStateOf(LocalDate.now()) }
+    var currentMonth = remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     Column(Modifier.verticalScroll(scrollState)) {
         ExpandableCalendar(
@@ -54,12 +58,20 @@ fun Calendar() {
                 dayValueTextColor = Color.White,
                 selectedDayValueTextColor = Color.Black,
                 headerTextColor = Color.White,
-                weekDaysTextColor = Color.White
+                weekDaysTextColor = Color.White,
+                weekDaysTitleTextColor = Color.LightGray,
+                weekDaysTextSize = 13.sp,
+                headerValueTextSize = 15.sp
             ), onDayClick = {
                 currentDate.value = it
-            })
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            }, daysWithBadge = listOf(LocalDate.now(), LocalDate.of( 2023,  12, 3)),
+            onMonthChanged = {
+                currentMonth.value = it.value.month.value.toString()
+            }
+            )
+        Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
             Text("Selected date: ${currentDate.value}")
+            Text("Selected mounth: ${currentMonth.value}")
         }
     }
 }
